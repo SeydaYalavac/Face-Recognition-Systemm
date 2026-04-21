@@ -1,0 +1,76 @@
+[
+  {
+    "timestamp": "2026-04-18 19:02:23",
+    "user_id": "ID_001",
+    "name": "seyda",
+    "confidence": 82.0,
+    "access_granted": true,
+    "alarm": 0,
+    "message": "Erisim Onaylandi. Hos geldiniz, seyda"
+  },
+  {
+    "timestamp": "2026-04-18 19:18:20",
+    "user_id": "ID_002",
+    "name": "sevde",
+    "confidence": 85.0,
+    "pose": "front",
+    "base_address": "0x20",
+    "access_granted": true,
+    "alarm": 0,
+    "message": "Hos geldiniz, sevde."
+  },
+  {
+    "user_id": "ID_002",
+    "name": "sevde",
+    "recognized": true,
+    "confidence_score": 85.0,
+    "pose": "front",
+    "access_granted": false,
+    "message": "Yetkisiz veya Pasif Kullanici.",
+    "alarm": 0,
+    "new_failed_count": 0,
+    "timestamp": "2026-04-18 19:35:11"
+  },
+  {
+    "recognized": false,
+    "confidence_score": 20.0,
+    "access_granted": false,
+    "message": "!!! ALARM AKTIF !!!",
+    "alarm": 1,
+    "new_failed_count": 3,
+    "timestamp": "2026-04-18 19:35:11"
+  },
+  {
+    "user_id": "ID_002",
+    "name": "sevde",
+    "recognized": true,
+    "confidence_score": 85.0,
+    "pose": "front",
+    "access_granted": false,
+    "message": "Yetkisiz veya Pasif Kullanici.",
+    "alarm": 0,
+    "new_failed_count": 0,
+    "timestamp": "2026-04-18 19:40:39"
+  },
+  {
+    "recognized": false,
+    "confidence_score": 20.0,
+    "access_granted": false,
+    "message": "!!! ALARM AKTIF !!!",
+    "alarm": 1,
+    "new_failed_count": 3,
+    "timestamp": "2026-04-18 19:40:39"
+  },
+  {
+    "user_id": "ID_002",
+    "name": "sevde",
+    "recognized": true,
+    "confidence_score": 88.0,
+    "pose": "front",
+    "access_granted": true,
+    "message": "Erisim Onaylandi. Hos geldiniz, ID_002.",
+    "alarm": 0,
+    "timestamp": "2026-04-19 16:53:04",
+    "auth_level": 2
+  }
+]

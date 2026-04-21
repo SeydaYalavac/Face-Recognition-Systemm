@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-04-21 21:12:37",
+  "statistics": {
+    "total_capacity": 50,
+    "used": 2,
+    "free": 48,
+    "usage_percentage": 4.0,
+    "address_range": "0x10 - 0x330",
+    "block_size": 6
+  },
+  "users": {
+    "ID_001": {
+      "user_id": "ID_001",
+      "name": "Seyda",
+      "authority_level": 1,
+      "status": 1,
+      "failed_attempts": 0,
+      "alarm": 0,
+      "last_access": null,
+      "created_at": "2026-04-21 21:12:37",
+      "base_address": "0x10"
+    },
+    "ID_002": {
+      "user_id": "ID_002",
+      "name": "Sevde",
+      "authority_level": 1,
+      "status": 1,
+      "failed_attempts": 0,
+      "alarm": 0,
+      "last_access": null,
+      "created_at": "2026-04-21 21:12:37",
+      "base_address": "0x20"
+    }
+  },
+  "logs": [
+    {
+      "timestamp": "2026-04-21 21:12:37",
+      "level": "SISTEM",
+      "message": "Bellek Sistemi başlatıldı"
+    },
+    {
+      "timestamp": "2026-04-21 21:12:37",
+      "level": "SİSTEM",
+      "message": "Max kapasite: 50 kullanıcı, Blok boyutu: 6 alan"
+    },
+    {
+      "timestamp": "2026-04-21 21:12:37",
+      "level": "BASARILI",
+      "message": "Kullanıcı eklendi: ID_001 (Seyda, Adres: 0x10)"
+    },
+    {
+      "timestamp": "2026-04-21 21:12:37",
+      "level": "BASARILI",
+      "message": "Kullanıcı eklendi: ID_002 (Sevde, Adres: 0x20)"
+    }
+  ]
+}
