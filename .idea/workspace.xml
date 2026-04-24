@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="348043a2-eb22-4010-8169-dac90a6ef840" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/memory_data/users_memory.json" beforeDir="false" afterPath="$PROJECT_DIR$/memory_data/users_memory.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recognize_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/recognize_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/register_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/register_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer.yml" beforeDir="false" afterPath="$PROJECT_DIR$/trainer.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fix_all.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fix_score.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metric_learning.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_conversion.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,7 +233,7 @@
       <workItem from="1776990590224" duration="756000" />
       <workItem from="1777013244373" duration="3220000" />
       <workItem from="1777021809344" duration="3173000" />
-      <workItem from="1777025079911" duration="5579000" />
+      <workItem from="1777025079911" duration="5955000" />
     </task>
     <servers />
   </component>
