@@ -1,29 +1,21 @@
-# TODO - Guven Skoru 0 Sorunu Duzeltme
+# TODO - Yuz Tanima Test Modu ve Guven Skoru Duzeltme
 
 ## Plan
 - [x] Analiz tamamlandi
-- [x] `config.py` esik degerlerini duzelt
-- [x] `recognize_user.py` `conf_to_display_score()` mapping'ini duzelt
-- [x] `recognize_user.py` `avg_score` hesaplamasini duzelt
-- [x] Test ve kontrol
-
-## Yapilan Degisiklikler
-
-### config.py
-- `LBPH_STRICT_THRESHOLD`: 70.0 → 75.0
-- `LBPH_SOFT_THRESHOLD`: 105.0 → 95.0
-- `MIN_DISPLAY_SCORE_TO_ACCEPT`: 65 → 55
-
-### recognize_user.py
-- `conf_to_display_score()` mapping guncellendi. Yeni eşiklerle uyumlu daha doğrusal skorlar:
-  - conf <= 40 → 98, conf <= 50 → 94, conf <= 60 → 90, conf <= 70 → 85
-  - conf <= 75 → 80, conf <= 80 → 75, conf <= 90 → 68, conf <= 95 → 60
-  - conf <= 100 → 55, conf <= 110 → 45, conf <= 120 → 35, conf <= 140 → 25, else → 15
-- `avg_score` hesaplamasi duzeltildi: `valid_scores` bossa 0 yerine son non-zero skor korunuyor.
+- [x] `config.py`'ye TEST_MODE bayragi ve test sabitleri ekle
+- [x] `recognize_user.py` `conf_to_display_score()` mapping'ini duzelt (LBPH ters oranti)
+- [x] `recognize_user.py`'ye users.json <-> trainer.yml label eslesme debug satiri ekle
+- [x] `recognize_user.py` accept mantigini duzelt (finally blogundan cikar, dongu icine al)
+- [x] `recognize_user.py`'ye Test Modu ekle (bulaniklik/parlaklik filtrelerini devre disi birak)
+- [x] Syntax kontrolu ve test
 
 ## Beklenen Sonuc
-- Artik LBPH mesafesi 95 altinda olan tahminler `soft` olarak kabul edilecek.
-- `conf_to_display_score(95)` = 60, `MIN_DISPLAY_SCORE_TO_ACCEPT(55)`'i geciyor.
-- VIP kullanicilar icin esik 45'e dusuyor (55 - 10).
-- Gecerli tahmin yoksa bile ekranda 0 yerine son gecerli skor gorunecek.
+- LBPH mesafesi dusukse guven skoru yuksek cikacak (`100 - conf`).
+- `trainer.yml` label'lari ile `users.json` `numeric_id` degerleri konsolda gorunecek.
+- Test modunda bulaniklik ve parlaklik filtreleri calismayacak.
+- `accept` mantigi dogru calisacak, tanima basarili olacak.
+
+## Not
+- `config.py` icinde `TEST_MODE = True` olarak ayarlandi. Testler bittiginde `False` yapilmali.
+
 

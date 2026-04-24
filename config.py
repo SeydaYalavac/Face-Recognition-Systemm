@@ -20,8 +20,8 @@ MIN_FACE_SIZE = 60  # Daha büyük minimum yüz boyutu
 # LBPH Algoritma Parametreleri (Mobil Uyumlu - Dengeli)
 LBPH_RADIUS = 1
 LBPH_NEIGHBORS = 8
-LBPH_GRID_X = 10  # Biraz daha büyük grid - daha iyi ayırt etme
-LBPH_GRID_Y = 10  # Biraz daha büyük grid - daha iyi ayırt etme
+LBPH_GRID_X = 12  # Daha hassas grid - daha iyi ayırt etme
+LBPH_GRID_Y = 12  # Daha hassas grid - daha iyi ayırt etme
 LBPH_STRICT_THRESHOLD = 85.0  # Daha makul strict eşik
 LBPH_SOFT_THRESHOLD = 140.0   # Daha geniş soft eşik
 
@@ -86,3 +86,14 @@ DOMINANCE_DIFF = 1  # En iyi 2 tahmin arasında minimum fark
 # --- CANLI TANIMA PARAMETRELERI ---
 HISTORY_WINDOW = 5   # Daha kısa pencere - daha hızlı karar
 PREDICT_EVERY_N_FRAMES = 2  # Daha sık tahmin
+
+# --- TEST MODU AYARLARI ---
+TEST_MODE = True
+
+# Test modunda kullanılan daha toleranslı eşikler
+# Tanınmayan kişiler için yanlış isim önlemek: eşikleri daha makul ayarla
+TEST_LBPH_SOFT_THRESHOLD = 160.0
+TEST_MIN_DISPLAY_SCORE_TO_ACCEPT = 30.0
+TEST_BLUR_THRESHOLD = 5.0
+TEST_BRIGHTNESS_THRESHOLD = 10.0
+TEST_DOMINANCE_DIFF = 1

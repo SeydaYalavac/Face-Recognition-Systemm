@@ -10,8 +10,8 @@ from config import (
 )
 from face_utils import (
     ensure_paths, detect_face_and_crop, preprocess_face,
-    estimate_pose_label, draw_status_panel, load_users,
-    measure_brightness
+    align_face, estimate_pose_label, draw_status_panel,
+    load_users, measure_brightness
 )
 
 # --- Kayıt Parametreleri ---
@@ -137,9 +137,9 @@ def register_new_user(name):
                 else:
                     curr_time = time.time()
                     if curr_time - last_capture_time > 0.4:
-                        # RAW renkli yüz kırpmayı kaydet (preprocessing yok)
-                        # Eğitim ve tanıma aynı preprocessing'i uygulasın
-                        raw_resized = cv2.resize(face_crop, (200, 200))
+                        aligned_face = align_face(frame)
+                        saved_face = aligned_face if aligned_face is not None else face_crop
+                        raw_resized = cv2.resize(saved_face, (200, 200))
                         img_name = f"{target_pose}_{pose_counts[target_pose]}.jpg"
                         cv2.imwrite(os.path.join(folder_path, img_name), raw_resized)
                         pose_counts[target_pose] += 1

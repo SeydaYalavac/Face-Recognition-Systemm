@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/memory_data/users.json;C:/face_project/yuz_tanima/memory_data/users_memory.json;C:/face_project/yuz_tanima/access_control.py;C:/face_project/yuz_tanima/bellek_utils.py;C:/face_project/yuz_tanima/clear_user_folder.py;C:/face_project/yuz_tanima/config.py;C:/face_project/yuz_tanima/erisim_log.json;C:/face_project/yuz_tanima/face_utils.py;C:/face_project/yuz_tanima/kisi4_interface.py;C:/face_project/yuz_tanima/main.py;C:/face_project/yuz_tanima/metric_learning.py;C:/face_project/yuz_tanima/model_conversion.py;C:/face_project/yuz_tanima/output_formatter.py;C:/face_project/yuz_tanima/recognize_user.py;C:/face_project/yuz_tanima/register_user.py;C:/face_project/yuz_tanima/TODO.md;C:/face_project/yuz_tanima/train_model.py;C:/face_project/yuz_tanima/users.json;C:/face_project/yuz_tanima/users_memory.json" />
+  </component>
+</project>

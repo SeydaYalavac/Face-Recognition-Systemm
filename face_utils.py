@@ -6,7 +6,7 @@ import mediapipe as mp
 import psutil
 
 from config import USERS_JSON, YUZZ_DIR
-
+BLUR_THRESHOLD = 100.0
 # --- MediaPipe Tasks API (Yeni Versiyon) ---
 BaseOptions = mp.tasks.BaseOptions
 FaceDetector = mp.tasks.vision.FaceDetector
@@ -514,6 +514,114 @@ def measure_brightness(face_bgr):
     """Parlaklık seviyesini ölçer."""
     gray = cv2.cvtColor(face_bgr, cv2.COLOR_BGR2GRAY)
     return float(np.mean(gray))
+
+
+def advanced_preprocess_face_crop(face_crop, target_size=(160, 160), blur_threshold=None):
+    """Kameradan gelen yüz kırpımına uygulanan kapsamlı ön işleme boru hattı."""
+    if blur_threshold is None:
+        blur_threshold = BLUR_THRESHOLD
+
+    gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
+    brightness = float(np.mean(gray))
+    blur_variance = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+    is_blurry = blur_variance < blur_threshold
+
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    equalized = clahe.apply(gray)
+
+    denoised = cv2.bilateralFilter(equalized, d=5, sigmaColor=75, sigmaSpace=75)
+    processed = cv2.resize(denoised, target_size)
+
+    return processed, blur_variance, brightness, is_blurry
+
+
+def create_preprocessing_comparison(raw_face, processed_face, window_height=240):
+    """Ham ve işlenmiş görüntüyü yan yana gösteren karşılaştırma görüntüsü oluşturur."""
+    if processed_face.ndim == 2:
+        processed_display = cv2.cvtColor(processed_face, cv2.COLOR_GRAY2BGR)
+    else:
+        processed_display = processed_face.copy()
+
+    raw_resized = cv2.resize(raw_face, (window_height * raw_face.shape[1] // raw_face.shape[0], window_height))
+    proc_resized = cv2.resize(processed_display, (window_height * processed_display.shape[1] // processed_display.shape[0], window_height))
+
+    combined = np.hstack([raw_resized, proc_resized])
+    cv2.putText(combined, 'Raw', (20, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+    cv2.putText(combined, 'Processed', (raw_resized.shape[1] + 20, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+    return combined
+
+
+def get_five_point_face_landmarks(frame):
+    """MediaPipe yüz landmarklarından 5 temel noktayı alır."""
+    if face_landmarker is None or not init_success:
+        return None
+
+    try:
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+        result = face_landmarker.detect_for_video(mp_image, _get_next_timestamp())
+        if not result.face_landmarks:
+            return None
+
+        lm = result.face_landmarks[0]
+        h, w = frame.shape[:2]
+
+        left_eye = np.mean([[lm[33].x * w, lm[33].y * h], [lm[133].x * w, lm[133].y * h]], axis=0)
+        right_eye = np.mean([[lm[362].x * w, lm[362].y * h], [lm[263].x * w, lm[263].y * h]], axis=0)
+        nose_tip = np.array([lm[1].x * w, lm[1].y * h], dtype=np.float32)
+        mouth_left = np.array([lm[61].x * w, lm[61].y * h], dtype=np.float32)
+        mouth_right = np.array([lm[291].x * w, lm[291].y * h], dtype=np.float32)
+
+        return {
+            'left_eye': left_eye.astype(np.float32),
+            'right_eye': right_eye.astype(np.float32),
+            'nose_tip': nose_tip,
+            'mouth_left': mouth_left,
+            'mouth_right': mouth_right,
+        }
+    except Exception:
+        return None
+
+
+def align_face(frame, output_size=(160, 160)):
+    """Yüzü 5 noktaya göre hizalar ve kırpar."""
+    landmarks = get_five_point_face_landmarks(frame)
+    if landmarks is None:
+        return None
+
+    src = np.vstack([
+        landmarks['left_eye'],
+        landmarks['right_eye'],
+        landmarks['nose_tip'],
+        landmarks['mouth_left'],
+        landmarks['mouth_right'],
+    ]).astype(np.float32)
+
+    dst = np.array([
+        [output_size[0] * 0.30, output_size[1] * 0.35],
+        [output_size[0] * 0.70, output_size[1] * 0.35],
+        [output_size[0] * 0.50, output_size[1] * 0.55],
+        [output_size[0] * 0.32, output_size[1] * 0.78],
+        [output_size[0] * 0.68, output_size[1] * 0.78],
+    ], dtype=np.float32)
+
+    matrix, _ = cv2.estimateAffinePartial2D(src, dst, method=cv2.LMEDS)
+    if matrix is None:
+        matrix = cv2.getAffineTransform(src[:3], dst[:3])
+
+    aligned = cv2.warpAffine(frame, matrix, output_size, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    return aligned
+
+
+def draw_alignment_comparison(raw_face, aligned_face, window_name='Alignment Comparison'):
+    """Ham yüz ve hizalanmış yüzü yan yana gösterir."""
+    if aligned_face is None:
+        return
+
+    aligned_resized = cv2.resize(aligned_face, (raw_face.shape[1], raw_face.shape[0]))
+    comparison = np.hstack([raw_face, aligned_resized])
+    cv2.putText(comparison, 'Raw Face', (20, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+    cv2.putText(comparison, 'Aligned Face', (raw_face.shape[1] + 20, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+    cv2.imshow(window_name, comparison)
 
 
 # --- Durum Paneli Çizimi ---
