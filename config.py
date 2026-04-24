@@ -11,19 +11,19 @@ YUZZ_DIR = os.path.join(BASE_DIR, "yuzz")
 USERS_JSON = os.path.join(BASE_DIR, "users.json")
 TRAINER_PATH = os.path.join(BASE_DIR, "trainer.yml")
 
-# Kamera Ayarları
+# Kamera Ayarları (Mobil Uyumlu - Daha Büyük)
 CAMERA_INDEX = 0
-FRAME_WIDTH = 960
-FRAME_HEIGHT = 720
-MIN_FACE_SIZE = 100
+FRAME_WIDTH = 640   # Daha büyük - yüzü görmek için
+FRAME_HEIGHT = 480  # Daha büyük - yüzü görmek için
+MIN_FACE_SIZE = 60  # Daha büyük minimum yüz boyutu
 
-# LBPH Algoritma Parametreleri
+# LBPH Algoritma Parametreleri (Mobil Uyumlu - Dengeli)
 LBPH_RADIUS = 1
 LBPH_NEIGHBORS = 8
-LBPH_GRID_X = 8
-LBPH_GRID_Y = 8
-LBPH_STRICT_THRESHOLD = 55.0
-LBPH_SOFT_THRESHOLD = 70.0
+LBPH_GRID_X = 10  # Biraz daha büyük grid - daha iyi ayırt etme
+LBPH_GRID_Y = 10  # Biraz daha büyük grid - daha iyi ayırt etme
+LBPH_STRICT_THRESHOLD = 85.0  # Daha makul strict eşik
+LBPH_SOFT_THRESHOLD = 140.0   # Daha geniş soft eşik
 
 # --- KİŞİ 2 (BELLEK SİSTEMİ) İHTİYAÇLARI ---
 # bellek_utils.py bu isimleri ve sınıfları bekliyor
@@ -39,6 +39,7 @@ USERS_MEMORY_FILE = DATA_DIR / "users_memory.json"
 LOG_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # --- KİŞİ 3 & 4 (KARAR VE ARAYÜZ) İHTİYAÇLARI ---
+WINDOW_NAME_RECOGNIZE = "Yüz Tanıma Sistemi - Canlı Tanıma"
 class MEMORY_OFFSET:
     USER_ID = 0
     AUTHORITY_LEVEL = 1
@@ -68,9 +69,20 @@ ALARM_NAMES = {0: "Kapalı", 1: "AÇIK"}
 # Pencere İsimleri
 WINDOW_NAME_RECOGNIZE = "Kisi1 - Tanima"
 WINDOW_NAME_REGISTER = "Kisi1 - Yeni Kullanici Kaydi"
-MIN_CONFIDENCE_SCORE = 70.0  # Güven skoru %70 altındaysa reddet
+MIN_CONFIDENCE_SCORE = 60.0  # Güven skoru %60 altındaysa reddet (daha gerçekçi)
 LOG_ENABLED = True           # İşlemleri kaydet
 # --- BU SATIRLAR SENİN KODUNDA EKSİK OLAN VE HATAYA SEBEP OLAN KISIMLAR ---
 MEMORY_DUMP_FILE = DATA_DIR / "memory_dump.txt"
 # Görüntü netlik sınırı (Bulanık fotoğrafları reddetmek için)
-BLUR_THRESHOLD =40
+BLUR_THRESHOLD = 20  # Bulanık görüntüleri reddet (biraz daha toleranslı)
+BRIGHTNESS_THRESHOLD = 30  # Karanlık görüntüleri reddet
+MIN_DISPLAY_SCORE_TO_ACCEPT = 40  # Minimum kabul skoru
+MIN_REPEATS_FRONT = 4   # Ön yüz için minimum tekrar
+MIN_REPEATS_PROFILE = 4  # Profil için minimum tekrar
+MIN_REPEATS_UPDOWN = 4   # Yukarı/aşağı için minimum tekrar
+# --- DOMINANCE FARK (Kararlılık) ---
+DOMINANCE_DIFF = 1  # En iyi 2 tahmin arasında minimum fark
+
+# --- CANLI TANIMA PARAMETRELERI ---
+HISTORY_WINDOW = 5   # Daha kısa pencere - daha hızlı karar
+PREDICT_EVERY_N_FRAMES = 2  # Daha sık tahmin

@@ -9,7 +9,31 @@ from clear_user_folder import clear_user_folder
 from bellek_utils import BellekSistemi
 from kisi4_interface import Kisi4Interface
 from access_control import donanim_tetikle, log_kaydet, erisim_karari_uret, log_goruntule
+try:
+    from kivymd.app import MDApp
+    from kivymd.uix.label import MDLabel
+    from kivy.clock import Clock
+    KIVYMD_AVAILABLE = True
+except ImportError:
+    KIVYMD_AVAILABLE = False
+from face_utils import get_system_performance  # Kişi 1'in yazdığı fonksiyon
 
+if KIVYMD_AVAILABLE:
+    class FaceApp(MDApp):
+        def on_start(self):
+            # Uygulama açıldığında her 1 saniyede bir verileri güncelle
+            Clock.schedule_interval(self.update_hardware_stats, 1.0)
+
+        def update_hardware_stats(self, dt):
+            # Kişi 1'in hazırladığı verileri sözlük olarak al
+            stats = get_system_performance()
+
+            # Bu verileri arayüzdeki (Kişi 4'ün yaptığı) etiketlere gönder
+            self.root.ids.cpu_label.text = f"CPU: %{stats['cpu_usage']}"
+            self.root.ids.ram_label.text = f"RAM: %{stats['ram_usage']}"
+            self.root.ids.freq_label.text = f"Frekans: {stats['frequency']} MHz"
+else:
+    print("KivyMD bulunamadı - GUI modu kullanılamıyor")
 
 def ana_menu():
     """Ana menüyü göster"""

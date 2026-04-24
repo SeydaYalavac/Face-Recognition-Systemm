@@ -12,7 +12,7 @@ import datetime
 # AYARLAR
 LOG_DOSYASI = "erisim_log.json"
 MAX_HATALI_GIRIS = 3
-GUVEN_ESIGI = 75.0
+GUVEN_ESIGI = 78.0
 
 def donanim_tetikle(durum, mesaj):
     if not PLYER_HAZIR:
