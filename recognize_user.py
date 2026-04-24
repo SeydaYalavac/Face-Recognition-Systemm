@@ -61,12 +61,9 @@ def get_registered_names():
 
 def conf_to_display_score(conf: float) -> float:
     """LBPH mesafesini tersine çevirerek 0-100 arası skor üretir.
-    Düşük mesafe = yüksek güven. Test modunda normalize edilir."""
-    if TEST_MODE:
-        # Test: conf 150-350 arası tipik, 150->100%, 350->0%
-        score = (350.0 - conf) / 2.0
-    else:
-        score = 100.0 - conf
+    Düşük mesafe = yüksek güven."""
+    # conf 60-110 arası tipik, 60->70%, 110->45%, 150->25%, 200->0%
+    score = (200.0 - conf) / 2.0
     return max(0.0, min(100.0, round(score, 2)))
 
 
@@ -221,29 +218,32 @@ def recognize_live(bellek, sensor_data=None, lux_val=100):
                     panel_data["landmark_analysis"] = "tamamlandi"
                     panel_data["pose"] = pose
 
-                    # Egitimle ayni on isleme kullan (align_face devre disi)
-                    processed = preprocess_face(face_crop)
+                    aligned_face = align_face(face_crop)
+                    if aligned_face is None:
+                        aligned_face = face_crop
 
-                    # Blur ve brightness ayri olc
-                    blur_value = measure_blur(face_crop)
-                    bright_value = measure_brightness(face_crop)
-                    is_blurry = blur_value < ACTIVE_BLUR_THRESHOLD
+                    processed, blur_value, bright_value, is_blurry = advanced_preprocess_face_crop(
+                        aligned_face,
+                        target_size=(160, 160),
+                        blur_threshold=ACTIVE_BLUR_THRESHOLD
+                    )
                     panel_data["blur_score"] = round(blur_value, 2)
                     panel_data["brightness"] = round(bright_value, 2)
 
+                    cv2.imshow("Aligned Face", cv2.resize(aligned_face, (160, 160)))
                     comparison = create_preprocessing_comparison(face_crop, processed)
                     cv2.imshow("Preprocess Comparison", comparison)
 
                     # Poza gore esik (test modunda daha toleransli)
-                    base_strict = LBPH_STRICT_THRESHOLD + (2 if not TEST_MODE else 15)
-                    base_soft = ACTIVE_LBPH_SOFT_THRESHOLD + (2 if not TEST_MODE else 15)
+                    base_strict = LBPH_STRICT_THRESHOLD + (1 if not TEST_MODE else 0)
+                    base_soft = ACTIVE_LBPH_SOFT_THRESHOLD + (1 if not TEST_MODE else 12)
 
                     if pose in ("right", "left"):
-                        strict_threshold = base_strict + 8
-                        soft_threshold = base_soft + 8
+                        strict_threshold = base_strict + 5
+                        soft_threshold = base_soft + 5
                     elif pose in ("up", "down"):
-                        strict_threshold = base_strict + 6
-                        soft_threshold = base_soft + 6
+                        strict_threshold = base_strict + 4
+                        soft_threshold = base_soft + 4
                     else:
                         strict_threshold = base_strict
                         soft_threshold = base_soft
@@ -251,7 +251,7 @@ def recognize_live(bellek, sensor_data=None, lux_val=100):
                     min_required_repeats = 1
 
                     # Karanlik kontrolu (test modunda atla)
-                    bright_limit = 35 if not TEST_MODE else 5
+                    bright_limit = ACTIVE_BRIGHTNESS_THRESHOLD if not TEST_MODE else 5
                     if bright_value < bright_limit and not TEST_MODE:
                         panel_data["next_step"] = "cok karanlik"
                         cv2.putText(frame, "unknown | dusuk isik", (x1, y1 - 10),
@@ -259,7 +259,7 @@ def recognize_live(bellek, sensor_data=None, lux_val=100):
                         last_output = build_output("N/A", "unknown", False, 0, pose, "cok karanlik")
 
                     # Bulaniklik kontrolu (test modunda atla)
-                    elif blur_value < 70 and not TEST_MODE:
+                    elif is_blurry and not TEST_MODE:
                         panel_data["next_step"] = "goruntu bulanik"
                         cv2.putText(frame, "unknown | bulanik", (x1, y1 - 10),
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -296,8 +296,9 @@ def recognize_live(bellek, sensor_data=None, lux_val=100):
                         # Skor hesaplama
                         # Kimlik belirleme (stable_name) icin SADECE strict/soft kullan
                         # weak/unknown tahminler taninmayan kisi icin yanlis isim cikmasina neden olur
-                        identity_types = ("strict", "soft")
-                        score_types = ("strict", "soft", "weak") if TEST_MODE else ("strict", "soft")
+                        # Sadece 'strict' tahminler kimlik belirlemesine katilir
+                        identity_types = ("strict",)
+                        score_types = ("strict",)
 
                         strict_soft_scores = [s for s, v in zip(recent_scores, recent_valid)
                                               if v in score_types]
@@ -333,10 +334,11 @@ def recognize_live(bellek, sensor_data=None, lux_val=100):
                             dominance_ok = (top_count - second_count) >= ACTIVE_DOMINANCE_DIFF
                             score_ok = avg_score >= ACTIVE_MIN_DISPLAY_SCORE
                             repeats_ok = total_valid >= min_required_repeats
-                            # Taninmayan kisi onleme: ortalama raw conf soft_threshold'un altinda olmali
-                            conf_ok = avg_raw_conf <= soft_threshold
+                            # Taninmayan kisi onleme: ortalama raw conf strict_threshold'un altinda olmali
+                            # (Sadece guclu eslesmeleri kabul et)
+                            conf_ok = avg_raw_conf <= strict_threshold
 
-                            print(f"[DEBUG] accept_check: stable={stable_name}, avg_score={avg_score}, avg_raw_conf={avg_raw_conf}, score_ok={score_ok}, repeats_ok={repeats_ok}, dominance_ok={dominance_ok}, conf_ok={conf_ok}, top={top_count}, second={second_count}")
+                            print(f"[DEBUG] accept_check: stable={stable_name}, avg_score={avg_score}, avg_raw_conf={avg_raw_conf}, score_ok={score_ok}, repeats_ok={repeats_ok}, dominance_ok={dominance_ok}, conf_ok={conf_ok}, strict={strict_threshold}, top={top_count}, second={second_count}")
 
                             if score_ok and repeats_ok and dominance_ok and conf_ok:
                                 accept = True

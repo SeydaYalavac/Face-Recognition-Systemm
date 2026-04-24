@@ -15,13 +15,13 @@ TRAINER_PATH = os.path.join(BASE_DIR, "trainer.yml")
 CAMERA_INDEX = 0
 FRAME_WIDTH = 640   # Daha büyük - yüzü görmek için
 FRAME_HEIGHT = 480  # Daha büyük - yüzü görmek için
-MIN_FACE_SIZE = 60  # Daha büyük minimum yüz boyutu
+MIN_FACE_SIZE = 40  # Daha büyük minimum yüz boyutu
 
 # LBPH Algoritma Parametreleri (Mobil Uyumlu - Dengeli)
 LBPH_RADIUS = 1
 LBPH_NEIGHBORS = 8
-LBPH_GRID_X = 12  # Daha hassas grid - daha iyi ayırt etme
-LBPH_GRID_Y = 12  # Daha hassas grid - daha iyi ayırt etme
+LBPH_GRID_X = 8  # Daha hassas grid - daha iyi ayırt etme
+LBPH_GRID_Y = 8  # Daha hassas grid - daha iyi ayırt etme
 LBPH_STRICT_THRESHOLD = 85.0  # Daha makul strict eşik
 LBPH_SOFT_THRESHOLD = 140.0   # Daha geniş soft eşik
 
@@ -92,8 +92,8 @@ TEST_MODE = True
 
 # Test modunda kullanılan daha toleranslı eşikler
 # Tanınmayan kişiler için yanlış isim önlemek: eşikleri daha makul ayarla
-TEST_LBPH_SOFT_THRESHOLD = 160.0
-TEST_MIN_DISPLAY_SCORE_TO_ACCEPT = 30.0
+TEST_LBPH_SOFT_THRESHOLD = 70.0
+TEST_MIN_DISPLAY_SCORE_TO_ACCEPT = 65.0
 TEST_BLUR_THRESHOLD = 5.0
 TEST_BRIGHTNESS_THRESHOLD = 10.0
-TEST_DOMINANCE_DIFF = 1
+TEST_DOMINANCE_DIFF = 4

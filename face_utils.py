@@ -23,16 +23,16 @@ FACE_LANDMARKER_MODEL = os.path.join(os.path.dirname(__file__), 'face_landmarker
 face_detector_options = FaceDetectorOptions(
     base_options=BaseOptions(model_asset_path=FACE_DETECTOR_MODEL),
     running_mode=VisionRunningMode.VIDEO,
-    min_detection_confidence=0.2,  # Daha toleranslı
-    min_suppression_threshold=0.2
+    min_detection_confidence=0.1,  # Daha toleranslı
+    min_suppression_threshold=0.1
 )
 
 # Eğitim için image mode face detector
 face_detector_image_options = FaceDetectorOptions(
     base_options=BaseOptions(model_asset_path=FACE_DETECTOR_MODEL),
     running_mode=VisionRunningMode.IMAGE,
-    min_detection_confidence=0.2,  # Daha toleranslı
-    min_suppression_threshold=0.2
+    min_detection_confidence=0.1,  # Daha toleranslı
+    min_suppression_threshold=0.1
 )
 
 # Face landmarker for pose estimation
@@ -271,9 +271,9 @@ def detect_face_and_crop_haar(frame):
     faces = detect_face_and_crop_haar.cascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
-        minNeighbors=2,
-        minSize=(40, 40),
-        maxSize=(400, 400)
+        minNeighbors=1,
+        minSize=(20, 20),
+        maxSize=(600, 600)
     )
 
     if len(faces) == 0:
